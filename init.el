@@ -29,7 +29,7 @@
  '(jdee-jdk-registry '(("1.11" . "/usr/lib/jvm/java-11-amazon-corretto")))
  '(jdee-server-dir "~/.emacs.d/jdee-server/target")
  '(package-selected-packages
-   '(sudo-edit ac-js2 company-tern tern company-jedi company-auctex js2hl xref-js2 xref-js js2-refactor js2-mode web-beautify validate-html yasnippet ein auctex-mode paradox doom-modeline spotify dired-hacks-utils dired-git dired+ visual-regexp-steroids multiple-cursors projectile magit emms mode-line treemacs-icons-dired doom-colors treemacs pdf-tools latex-preview-pane company doom-themes paredit-menu paredit jdee sr-speedbar flycheck haskell-mode slime geiser))
+   '(lsp-ui lsp-treemacs typescript-mode lsp-mode sudo-edit ac-js2 company-tern tern company-jedi company-auctex js2hl xref-js2 xref-js js2-refactor js2-mode web-beautify validate-html yasnippet ein auctex-mode paradox doom-modeline spotify dired-hacks-utils dired-git dired+ visual-regexp-steroids multiple-cursors projectile magit emms mode-line treemacs-icons-dired doom-colors treemacs pdf-tools latex-preview-pane company doom-themes paredit-menu paredit jdee sr-speedbar flycheck haskell-mode slime geiser))
  '(projectile-mode t nil (projectile))
  '(speedbar-show-unknown-files t)
  '(tab-width 4)
@@ -217,7 +217,32 @@
   (add-to-list 'company-backends 'ac-js2-company)
   (setq ac-js2-evaluate-calls t))
 
-
 (use-package sudo-edit
+  :ensure t)
+
+(use-package typescript-mode
+  :ensure t)
+
+(use-package lsp-mode
+  :ensure t
+  :hook
+  (typescript-mode . lsp)
+  (js-mode . lsp)
+  (html-mode . lsp)
+  (css-mode . lsp)
+  :config
+  (setq lsp-clients-angular-language-server-command
+        '("node"
+          "/usr/lib/node_modules/@angular/language-server"
+          "--ngProbeLocations"
+          "/usr/lib/node_modules"
+          "--tsProbeLocations"
+          "/usr/lib/node_modules"
+          "--stdio")))
+
+(use-package lsp-ui
+  :ensure t)
+
+(use-package lsp-treemacs
   :ensure t)
 
