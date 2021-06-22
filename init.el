@@ -25,12 +25,8 @@
  '(geiser-mode-eval-last-sexp-to-buffer t t)
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
- '(jdee-jdk nil)
- '(jdee-jdk-registry '(("1.11" . "/usr/lib/jvm/java-11-amazon-corretto")))
- '(jdee-server-dir "~/.emacs.d/jdee-server/target")
  '(package-selected-packages
-   '(lsp-ui lsp-treemacs typescript-mode lsp-mode sudo-edit ac-js2 company-tern tern company-jedi company-auctex js2hl xref-js2 xref-js js2-refactor js2-mode web-beautify validate-html yasnippet ein auctex-mode paradox doom-modeline spotify dired-hacks-utils dired-git dired+ visual-regexp-steroids multiple-cursors projectile magit emms mode-line treemacs-icons-dired doom-colors treemacs pdf-tools latex-preview-pane company doom-themes paredit-menu paredit jdee sr-speedbar flycheck haskell-mode slime geiser))
- '(projectile-mode t nil (projectile))
+   '(rainbow-delimiters all-the-icons-dired auctex use-package lsp-jedi lsp-ui lsp-treemacs typescript-mode lsp-mode sudo-edit ac-js2 company-tern tern company-jedi company-auctex js2hl xref-js2 xref-js js2-refactor js2-mode web-beautify validate-html yasnippet ein auctex-mode paradox doom-modeline spotify dired-hacks-utils dired-git dired+ visual-regexp-steroids multiple-cursors projectile magit emms mode-line treemacs-icons-dired doom-colors treemacs pdf-tools latex-preview-pane company doom-themes sr-speedbar flycheck haskell-mode slime geiser))
  '(speedbar-show-unknown-files t)
  '(tab-width 4)
  '(window-divider-mode t))
@@ -67,26 +63,30 @@
  ;; example.
 (setq-default indent-tabs-mode nil)
 
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(setq require-final-newline t)
+
  ;; if indent-tabs-mode is off, untabify before saving
-(add-hook 'write-file-hooks 
-            (lambda () (if (not indent-tabs-mode)
-                         (untabify (point-min) (point-max)))
+(add-hook 'write-file-hooks
+          (lambda ()
+            (if (not indent-tabs-mode)
+                (untabify (point-min) (point-max)))
             nil ))
 
 ;; use built-in ibuffer which has many features from dired and replaces buffer-menu
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(use-package yasnippet)
+(show-paren-mode)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package yasnippet
+  :ensure t)
 
 (use-package tex
   :ensure auctex)
-
-(use-package jdee
-  :disabled
-  :ensure t
-  :config
-  (setq jdee-jdk-registry '(("1.11" . "/usr/lib/jvm/java-11-amazon-corretto")))
-  (setq jdee-server-dir "~/.emacs.d/jdee-server/target"))
 
 (use-package slime
   :ensure t)
@@ -115,7 +115,12 @@
   :ensure t)
 
 (use-package projectile
-  :ensure t)
+  :ensure t
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ("s-p" . projectile-command-map)
+              ("C-c p" . projectile-command-map)))
 
 (use-package multiple-cursors
   :ensure t)
@@ -134,13 +139,15 @@
 
 (use-package all-the-icons
   :ensure t)
- 
+
 (use-package all-the-icons-dired
   :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
 
 (use-package paradox
-  :ensure t)
+  :ensure t
+  :config
+  (paradox-enable))
 
 (use-package doom-modeline
   :ensure t
@@ -156,13 +163,13 @@
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
-  
+
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; or for treemacs users
   (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
-  
+
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
@@ -205,6 +212,9 @@
   :ensure t
   :config (add-to-list 'company-backends 'company-auctex))
 
+(use-package lsp-jedi
+  :ensure t)
+
 ;; first install virtualenv on OS
 ;; execute M-x "jedi-install-server" once
 (use-package company-jedi
@@ -230,6 +240,7 @@
   (js-mode . lsp)
   (html-mode . lsp)
   (css-mode . lsp)
+  (python-mode . lsp)
   :config
   (setq lsp-clients-angular-language-server-command
         '("node"
@@ -245,4 +256,3 @@
 
 (use-package lsp-treemacs
   :ensure t)
-
