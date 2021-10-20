@@ -41,7 +41,7 @@
 (setq backup-directory-alist
           `(("." . ,(concat user-emacs-directory "backups"))))
 
-(setq inferior-lisp-program "clisp")
+(setq inferior-lisp-program "sbcl")
 
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython")
