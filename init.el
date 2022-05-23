@@ -14,21 +14,20 @@
   (package-install 'use-package))
 
 (require 'use-package)
+(setq use-package-always-ensure t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(gruvbox-dark-soft))
- '(custom-safe-themes
-   '("62c81ae32320ceff5228edceeaa6895c029cc8f43c8c98a023f91b5b339d633f" default))
- '(geiser-mode-auto-p t t)
- '(geiser-mode-eval-last-sexp-to-buffer t t)
+ '(geiser-mode-auto-p t)
+ '(geiser-mode-eval-last-sexp-to-buffer t)
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(pyvenv typescript-mode sudo-edit ac-js2 company-auctex company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors projectile magit pdf-tools geiser slime auctex yasnippet rainbow-delimiters use-package)))
+   '(tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company-auctex company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime auctex yasnippet rainbow-delimiters use-package))
+ '(warning-suppress-types '((use-package))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -85,118 +84,85 @@
 (show-paren-mode)
 
 (use-package gruvbox-theme
-  :ensure t)
+  :init (load-theme 'gruvbox-dark-soft t))
 
 (use-package rainbow-delimiters
-  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package yasnippet
-  :ensure t)
+(use-package yasnippet)
+
+(use-package auctex)
 
 (use-package tex
   :ensure auctex)
 
-(use-package slime
-  :ensure t)
+(use-package slime)
 
 (use-package geiser
-  :ensure t
   :config
   (setq geiser-mode-auto-p t)
   (setq geiser-mode-eval-last-sexp-to-buffer t))
 
 (use-package pdf-tools
-  :ensure t
   :load-path "site-lisp/pdf-tools/lisp"
   :magic ("%PDF" . pdf-view-mode)
   :config
   (pdf-tools-install :no-query))
 
-(use-package magit
-  :ensure t)
+(use-package magit)
 
-(use-package projectile
-  :ensure t
-  :init
-  (projectile-mode +1)
-  :bind (:map projectile-mode-map
-              ("s-p" . projectile-command-map)
-              ("C-c p" . projectile-command-map)))
+(use-package multiple-cursors)
 
-(use-package multiple-cursors
-  :ensure t)
+(use-package visual-regexp-steroids)
 
-(use-package visual-regexp-steroids
-  :ensure t)
+(use-package dired-git)
 
-(use-package dired-git
-  :ensure t)
+(use-package dired-hacks-utils)
 
-(use-package dired-hacks-utils
-  :ensure t)
+(use-package latex-preview-pane)
 
-(use-package latex-preview-pane
-  :ensure t)
-
-(use-package all-the-icons
-  :ensure t)
+(use-package all-the-icons)
 
 (use-package all-the-icons-dired
-  :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package treemacs
-  :ensure t)
+(use-package treemacs)
 
-(use-package ein
-  :ensure t)
+(use-package ein)
 
-(use-package web-beautify
-  :ensure t)
+(use-package web-beautify)
 
 (use-package js2-mode
-  :ensure t
   :hook (js-mode . js2-minor-mode)
   :config
   (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
   (add-to-list 'js2-global-externs "d3"))
 
 (use-package js2-refactor
-  :ensure t
   :hook (js2-minor-mode . js2-refactor-mode)
   :config (js2r-add-keybindings-with-prefix "C-c C-r"))
 
-(use-package xref-js2
-  :ensure t)
+(use-package xref-js2)
 
-(use-package js2hl
-  :ensure t)
+(use-package js2hl)
 
 (use-package flycheck
-  :ensure t
   :hook (after-init . global-flycheck-mode))
 
 (use-package company
-  :ensure t
   :config (add-to-list 'company-backends 'company-capf)
   :hook (after-init . global-company-mode))
 
 (use-package company-auctex
-  :ensure t
   :config (add-to-list 'company-backends 'company-auctex))
 
 (use-package ac-js2
-  :ensure t
   :config
   (add-to-list 'company-backends 'ac-js2-company)
   (setq ac-js2-evaluate-calls t))
 
-(use-package sudo-edit
-  :ensure t)
+(use-package sudo-edit)
 
-(use-package typescript-mode
-  :ensure t)
+(use-package typescript-mode)
 
-(use-package pyvenv
-  :ensure t)
+(use-package pyvenv)
