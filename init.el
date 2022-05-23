@@ -26,7 +26,7 @@
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(rainbow-delimiters all-the-icons-dired auctex use-package lsp-jedi lsp-ui lsp-treemacs typescript-mode lsp-mode sudo-edit ac-js2 company-tern tern company-jedi company-auctex js2hl xref-js2 xref-js js2-refactor js2-mode web-beautify validate-html yasnippet ein auctex-mode paradox doom-modeline spotify dired-hacks-utils dired-git dired+ visual-regexp-steroids multiple-cursors projectile magit emms mode-line treemacs-icons-dired doom-colors treemacs pdf-tools latex-preview-pane company doom-themes sr-speedbar flycheck haskell-mode slime geiser))
+   '(pddl-mode pyvenv rainbow-delimiters all-the-icons-dired auctex use-package lsp-jedi lsp-ui lsp-treemacs typescript-mode lsp-mode sudo-edit ac-js2 company-tern tern company-jedi company-auctex js2hl xref-js2 xref-js js2-refactor js2-mode web-beautify validate-html yasnippet ein auctex-mode paradox doom-modeline spotify dired-hacks-utils dired-git dired+ visual-regexp-steroids multiple-cursors projectile magit emms mode-line treemacs-icons-dired doom-colors treemacs pdf-tools latex-preview-pane company doom-themes sr-speedbar flycheck haskell-mode slime geiser))
  '(speedbar-show-unknown-files t)
  '(tab-width 4)
  '(window-divider-mode t))
@@ -206,6 +206,7 @@
 
 (use-package company
   :ensure t
+  :config (add-to-list 'company-backends 'company-capf)
   :hook (after-init . global-company-mode))
 
 (use-package company-auctex
@@ -255,4 +256,7 @@
   :ensure t)
 
 (use-package lsp-treemacs
+  :ensure t)
+
+(use-package pyvenv
   :ensure t)
