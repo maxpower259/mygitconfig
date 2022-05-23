@@ -37,8 +37,8 @@
  )
 
 (setq inhibit-startup-message t)
-(setq window-divider-mode t)
 (setq tab-width 4)
+(window-divider-mode +1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -128,7 +128,10 @@
 
 (use-package treemacs)
 
-(use-package ein)
+(use-package ein
+  :custom
+  (ein:output-area-inlined-images t)
+  (ein:slice-image t))
 
 (use-package web-beautify)
 
