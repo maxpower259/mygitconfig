@@ -21,13 +21,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(tab-width 2)
  '(geiser-mode-auto-p t t)
  '(geiser-mode-eval-last-sexp-to-buffer t t)
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company-auctex company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime auctex yasnippet rainbow-delimiters use-package))
+   '(yasnippet-go go-flycheck go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company-auctex company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime auctex yasnippet rainbow-delimiters use-package))
+ '(tab-width 2)
  '(warning-suppress-types '((use-package))))
 
 (custom-set-faces
@@ -182,5 +182,9 @@
   :hook (before-save . gofmt-before-save))
 
 (use-package go-playground)
+
+(use-package go-flycheck)
+
+(use-package yasnippet-go)
 
 (use-package kotlin-mode)
