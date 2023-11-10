@@ -21,12 +21,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(geiser-mode-auto-p t)
- '(geiser-mode-eval-last-sexp-to-buffer t)
+ '(tab-width 2)
+ '(geiser-mode-auto-p t t)
+ '(geiser-mode-eval-last-sexp-to-buffer t t)
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company-auctex company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime auctex yasnippet rainbow-delimiters use-package))
+   '(go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company-auctex company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime auctex yasnippet rainbow-delimiters use-package))
  '(warning-suppress-types '((use-package))))
 
 (custom-set-faces
@@ -37,7 +38,6 @@
  )
 
 (setq inhibit-startup-message t)
-(setq tab-width 4)
 (window-divider-mode +1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -47,6 +47,7 @@
       `(("." . ,(concat user-emacs-directory "backups"))))
 
 (setq inferior-lisp-program "sbcl")
+(setq c-default-style '((java-mode . "java") (other . "gnu")))
 
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython")
@@ -93,10 +94,14 @@
 
 (use-package auctex)
 
+(use-package json-mode)
+
 (use-package tex
   :ensure auctex)
 
 (use-package slime)
+
+(use-package geiser-racket)
 
 (use-package geiser
   :config
@@ -108,6 +113,8 @@
   :magic ("%PDF" . pdf-view-mode)
   :config
   (pdf-tools-install :no-query))
+
+(use-package maude-mode)
 
 (use-package magit)
 
@@ -169,3 +176,11 @@
 (use-package typescript-mode)
 
 (use-package pyvenv)
+
+(use-package go-mode
+  :custom (gofmt-command "goimports")
+  :hook (before-save . gofmt-before-save))
+
+(use-package go-playground)
+
+(use-package kotlin-mode)
