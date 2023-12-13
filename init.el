@@ -14,7 +14,7 @@
   (package-install 'use-package))
 
 (require 'use-package)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure nil)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -26,7 +26,7 @@
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(yasnippet-go go-flycheck go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company-auctex company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime auctex yasnippet rainbow-delimiters use-package))
+   '(protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-types '((use-package))))
 
@@ -84,6 +84,27 @@
 
 (show-paren-mode)
 
+(use-package org-mode
+  :init
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((dot . t)))
+
+  :hook
+  (org-babel-after-execute . org-redisplay-inline-images)
+
+  :custom
+  (org-startup-with-inline-images t)
+  (org-confirm-babel-evaluate nil)
+
+  ; fixes .svg
+  (org-latex-pdf-process
+   '("%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
+     "bibtex %b"
+     "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
+     "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  )
+
 (use-package gruvbox-theme
   :init (load-theme 'gruvbox-dark-soft t))
 
@@ -92,21 +113,16 @@
 
 (use-package yasnippet)
 
-(use-package auctex)
-
 (use-package json-mode)
-
-(use-package tex
-  :ensure auctex)
 
 (use-package slime)
 
 (use-package geiser-racket)
 
 (use-package geiser
-  :config
-  (setq geiser-mode-auto-p t)
-  (setq geiser-mode-eval-last-sexp-to-buffer t))
+  :custom
+  (geiser-mode-auto-p t)
+  (geiser-mode-eval-last-sexp-to-buffer t))
 
 (use-package pdf-tools
   :load-path "site-lisp/pdf-tools/lisp"
@@ -163,13 +179,11 @@
   :config (add-to-list 'company-backends 'company-capf)
   :hook (after-init . global-company-mode))
 
-(use-package company-auctex
-  :config (add-to-list 'company-backends 'company-auctex))
-
 (use-package ac-js2
   :config
   (add-to-list 'company-backends 'ac-js2-company)
-  (setq ac-js2-evaluate-calls t))
+  :custom
+  (ac-js2-evaluate-calls t))
 
 (use-package sudo-edit)
 
@@ -183,8 +197,10 @@
 
 (use-package go-playground)
 
-(use-package go-flycheck)
-
-(use-package yasnippet-go)
-
 (use-package kotlin-mode)
+
+(use-package markdown-mode)
+
+(use-package graphviz-dot-mode)
+
+(use-package protobuf-mode)
