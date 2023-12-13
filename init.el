@@ -25,8 +25,9 @@
  '(geiser-mode-eval-last-sexp-to-buffer t t)
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
+ '(ispell-dictionary nil)
  '(package-selected-packages
-   '(htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-types '((use-package))))
 
@@ -105,14 +106,18 @@
   (org-babel-after-execute . org-redisplay-inline-images)
 
   :custom
+  (org-latex-prefer-user-labels t)
   (org-startup-with-inline-images t)
+  (org-startup-indented t)
+  (org-pretty-entities t)
+  (org-use-sub-superscripts "{}")
+  (org-hide-emphasis-markers t)
+  (org-image-actual-width '(300))
   (org-confirm-babel-evaluate nil)
   (org-latex-listings 'minted)
   (org-latex-packages-alist '(("" "minted")))
   (org-latex-minted-options '(("breaklines" "true")
                               ("breakanywhere" "true")))
-
-  ; fixes .svg
   (org-latex-pdf-process
    '("%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
      "bibtex %b"
@@ -120,13 +125,40 @@
      "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"))
   )
 
+(use-package org-ref)
+
+(use-package org-appear
+  :hook
+  (org-mode . org-appear-mode))
+
+(use-package org-modern
+  :hook
+  (org-mode . global-org-modern-mode)
+  :custom
+  (org-modern-keyword nil)
+  (org-modern-checkbox nil)
+  (org-modern-table nil))
+
+(use-package org-fragtog
+  :after org
+  :custom
+  (org-startup-with-latex-preview t)
+  :hook
+  (org-mode . org-fragtog-mode)
+  :custom
+  (org-format-latex-options
+   (plist-put org-format-latex-options :scale 2)
+   (plist-put org-format-latex-options :foreground 'auto)
+   (plist-put org-format-latex-options :background 'auto)))
+
 (use-package gruvbox-theme
   :init (load-theme 'gruvbox-dark-soft t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package yasnippet)
+(use-package yasnippet
+  :config (yas-global-mode 1))
 
 (use-package json-mode)
 
