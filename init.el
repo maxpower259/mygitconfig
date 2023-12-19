@@ -13,6 +13,7 @@
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
+; (pdf-tools-install :no-query)
 (require 'use-package)
 (setq use-package-always-ensure nil)
 
@@ -27,7 +28,7 @@
  '(inhibit-startup-screen t)
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-types '((use-package))))
 
@@ -96,6 +97,8 @@
 
 (use-package htmlize)
 
+(use-package atomic-chrome)
+
 (use-package org-mode
   :init
   (org-babel-do-load-languages
@@ -160,6 +163,9 @@
 (use-package yasnippet
   :config (yas-global-mode 1))
 
+(use-package yatemplate
+  :config (yatemplate-fill-alist))
+
 (use-package json-mode)
 
 (use-package slime)
@@ -173,9 +179,7 @@
 
 (use-package pdf-tools
   :load-path "site-lisp/pdf-tools/lisp"
-  :magic ("%PDF" . pdf-view-mode)
-  :config
-  (pdf-tools-install :no-query))
+  :magic ("%PDF" . pdf-view-mode))
 
 (use-package maude-mode)
 
@@ -191,6 +195,7 @@
 
 (use-package latex-preview-pane)
 
+; all-the-icons-install-fonts
 (use-package all-the-icons)
 
 (use-package all-the-icons-dired
