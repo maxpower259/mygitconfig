@@ -22,14 +22,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(geiser-mode-auto-p t t)
- '(geiser-mode-eval-last-sexp-to-buffer t t)
  '(inferior-octave-startup-args '("-i" "--line-editing"))
  '(inhibit-startup-screen t)
  '(ispell-dictionary nil)
+ '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
+ '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
 
 (custom-set-faces
@@ -103,12 +103,17 @@
   :init
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((dot . t)))
+   '((dot . t)
+     (shell . t)
+     (python . t)
+     (plantuml . t)))
 
   :hook
   (org-babel-after-execute . org-redisplay-inline-images)
 
   :custom
+  (org-src-preserve-indentation nil)
+  (org-edit-src-content-indentation 0)
   (org-latex-prefer-user-labels t)
   (org-startup-with-inline-images t)
   (org-startup-indented t)
@@ -126,6 +131,7 @@
      "bibtex %b"
      "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
      "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  (org-plantuml-jar-path (expand-file-name "~/.emacs.d/plantuml/plantuml.jar"))
   )
 
 (use-package org-ref)
@@ -144,11 +150,10 @@
 
 (use-package org-fragtog
   :after org
-  :custom
-  (org-startup-with-latex-preview t)
   :hook
   (org-mode . org-fragtog-mode)
   :custom
+  (org-startup-with-latex-preview t)
   (org-format-latex-options
    (plist-put org-format-latex-options :scale 2)
    (plist-put org-format-latex-options :foreground 'auto)
@@ -256,3 +261,11 @@
 (use-package graphviz-dot-mode)
 
 (use-package protobuf-mode)
+
+(use-package plantuml-mode
+  :custom
+  (plantuml-jar-path (expand-file-name "~/.emacs.d/plantuml/plantuml.jar"))
+  (plantuml-jar-args '("-tpng"))
+  (plantuml-default-exec-mode 'jar)
+  (plantuml-output-type "png")
+  (plantuml-java-args (list "-Djava.awt.headless=true" "-jar")))
