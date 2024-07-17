@@ -43,7 +43,9 @@
 (window-divider-mode +1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
+
 
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
@@ -160,7 +162,7 @@
    (plist-put org-format-latex-options :background 'auto)))
 
 (use-package gruvbox-theme
-  :init (load-theme 'gruvbox-dark-soft t))
+  :init (load-theme 'gruvbox-dark-medium t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -249,8 +251,10 @@
 (use-package pyvenv)
 
 (use-package go-mode
-  :custom (gofmt-command "goimports")
-  :hook (before-save . gofmt-before-save))
+  :custom ((gofmt-command "goimports")
+           (display-fill-column-indicator-column 80))
+  :hook ((before-save . gofmt-before-save)
+         (go-mode . display-fill-column-indicator-mode)))
 
 (use-package go-playground)
 
