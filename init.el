@@ -43,6 +43,9 @@
 (window-divider-mode +1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
+(subword-mode 1)
+(windmove-default-keybindings)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
