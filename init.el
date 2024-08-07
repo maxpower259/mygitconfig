@@ -27,7 +27,7 @@
  '(ispell-dictionary nil)
  '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
@@ -44,11 +44,13 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(subword-mode 1)
+(global-subword-mode +1)
+(column-number-mode +1)
 (windmove-default-keybindings)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(setq exec-path (append exec-path '("~/go/bin")))
 
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
@@ -260,6 +262,9 @@
          (go-mode . display-fill-column-indicator-mode)))
 
 (use-package go-playground)
+
+(use-package flycheck-golangci-lint
+  :hook (go-mode . flycheck-golangci-lint-setup))
 
 (use-package kotlin-mode)
 
