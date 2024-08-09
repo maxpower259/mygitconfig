@@ -4,7 +4,7 @@
 ;; You may delete these explanatory comments.
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-                                        ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -15,7 +15,7 @@
 
 ; (pdf-tools-install :no-query)
 (require 'use-package)
-(setq use-package-always-ensure nil)
+;(setq use-package-always-ensure t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -27,7 +27,7 @@
  '(ispell-dictionary nil)
  '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(slime-company all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
@@ -43,14 +43,18 @@
 (window-divider-mode +1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
+(global-subword-mode +1)
+(column-number-mode +1)
+(windmove-default-keybindings)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-(windmove-default-keybindings)
+
+(setq exec-path (append exec-path '("~/go/bin")))
 
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
 
-(setq inferior-lisp-program "sbcl")
 (setq c-default-style '((java-mode . "java") (other . "gnu")))
 
 (when (executable-find "ipython")
@@ -177,25 +181,20 @@
 
 (use-package slime
   :init
-    (setq inferior-lisp-program "clisp")
+  (setq inferior-lisp-program "sbcl")
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
   :config
-    (slime-setup '(slime-fancy slime-company))
+  (slime-setup '(slime-fancy slime-company))
   :hook
-  (slime-mode . slime-company)
   (slime-mode . (lambda ()
-                  (load (expand-file-name "~/quicklisp/slime-helper.el"))
                   (add-to-list 'slime-contribs 'slime-fancy)
                   (add-to-list 'slime-contribs 'inferior-slime))))
 
 (use-package slime-company
   :after slime
-  :bind-keymap
-    ("C-n" . company-select-next)
-    ("C-p" . company-select-previous)
-    ("C-d" . company-show-doc-buffer)
-    ("M-." . company-show-location)
   :config (setq slime-company-completion 'fuzzy
                 slime-company-after-completion 'slime-company-just-one-space))
+
 
 (use-package geiser-racket)
 
@@ -283,6 +282,9 @@
          (go-mode . display-fill-column-indicator-mode)))
 
 (use-package go-playground)
+
+(use-package flycheck-golangci-lint
+  :hook (go-mode . flycheck-golangci-lint-setup))
 
 (use-package kotlin-mode)
 
