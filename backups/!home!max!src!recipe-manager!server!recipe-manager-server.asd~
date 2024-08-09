@@ -1,0 +1,8 @@
+(asdf:defsystem #:recipe-manager-server
+  :serial t
+  :description "Server for managing recipes"
+  :author "Maximilian Bauer <maxbauer94@gmx.net>"
+  :depends-on (#:hunchentoot
+               #:easy-routes
+               #:yason)
+  :components ((:file "api")))

@@ -27,7 +27,7 @@
  '(ispell-dictionary nil)
  '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(slime-company all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
@@ -45,7 +45,7 @@
 (menu-bar-mode -1)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-
+(windmove-default-keybindings)
 
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
@@ -175,7 +175,27 @@
 
 (use-package json-mode)
 
-(use-package slime)
+(use-package slime
+  :init
+    (setq inferior-lisp-program "clisp")
+  :config
+    (slime-setup '(slime-fancy slime-company))
+  :hook
+  (slime-mode . slime-company)
+  (slime-mode . (lambda ()
+                  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+                  (add-to-list 'slime-contribs 'slime-fancy)
+                  (add-to-list 'slime-contribs 'inferior-slime))))
+
+(use-package slime-company
+  :after slime
+  :bind-keymap
+    ("C-n" . company-select-next)
+    ("C-p" . company-select-previous)
+    ("C-d" . company-show-doc-buffer)
+    ("M-." . company-show-location)
+  :config (setq slime-company-completion 'fuzzy
+                slime-company-after-completion 'slime-company-just-one-space))
 
 (use-package geiser-racket)
 
@@ -235,8 +255,14 @@
   :hook (after-init . global-flycheck-mode))
 
 (use-package company
-  :config (add-to-list 'company-backends 'company-capf)
-  :hook (after-init . global-company-mode))
+  :config
+  (add-to-list 'company-backends 'company-capf)
+  (define-key company-active-map (kbd "\C-n") 'company-select-next)
+  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") 'company-show-location)
+  :hook
+  (after-init . global-company-mode))
 
 (use-package ac-js2
   :config
