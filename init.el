@@ -4,7 +4,7 @@
 ;; You may delete these explanatory comments.
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-                                        ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -15,7 +15,7 @@
 
 ; (pdf-tools-install :no-query)
 (require 'use-package)
-(setq use-package-always-ensure nil)
+;(setq use-package-always-ensure t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -55,7 +55,6 @@
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
 
-(setq inferior-lisp-program "sbcl")
 (setq c-default-style '((java-mode . "java") (other . "gnu")))
 
 (when (executable-find "ipython")
@@ -182,7 +181,22 @@
 
 (use-package json-mode)
 
-(use-package slime)
+(use-package slime
+  :init
+  (setq inferior-lisp-program "sbcl")
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  :config
+  (slime-setup '(slime-fancy slime-company))
+  :hook
+  (slime-mode . (lambda ()
+                  (add-to-list 'slime-contribs 'slime-fancy)
+                  (add-to-list 'slime-contribs 'inferior-slime))))
+
+(use-package slime-company
+  :after slime
+  :config (setq slime-company-completion 'fuzzy
+                slime-company-after-completion 'slime-company-just-one-space))
+
 
 (use-package geiser-racket)
 
@@ -242,8 +256,14 @@
   :hook (after-init . global-flycheck-mode))
 
 (use-package company
-  :config (add-to-list 'company-backends 'company-capf)
-  :hook (after-init . global-company-mode))
+  :config
+  (add-to-list 'company-backends 'company-capf)
+  (define-key company-active-map (kbd "\C-n") 'company-select-next)
+  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") 'company-show-location)
+  :hook
+  (after-init . global-company-mode))
 
 (use-package ac-js2
   :config
