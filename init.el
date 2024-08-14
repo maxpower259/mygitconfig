@@ -27,7 +27,7 @@
  '(ispell-dictionary nil)
  '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
@@ -101,6 +101,8 @@
    browse-url-generic-program  "/mnt/c/Windows/System32/cmd.exe"
    browse-url-generic-args     '("/c" "start")
    browse-url-browser-function #'browse-url-generic))
+
+(use-package restclient)
 
 (use-package htmlize)
 
