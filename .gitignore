@@ -1,3 +1,10 @@
-!.gitignore
-!init.el
-!snippets
+elpa
+.cache
+backups
+auto-save-list
+multisession
+eln-cache
+eshell
+url
+transient
+

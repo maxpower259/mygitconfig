@@ -15,7 +15,7 @@
 
 ; (pdf-tools-install :no-query)
 (require 'use-package)
-;(setq use-package-always-ensure t)
+; (setq use-package-always-ensure t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -27,7 +27,7 @@
  '(ispell-dictionary nil)
  '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(dape slime-company restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
@@ -303,3 +303,5 @@
   (plantuml-default-exec-mode 'jar)
   (plantuml-output-type "png")
   (plantuml-java-args (list "-Djava.awt.headless=true" "-jar")))
+
+(use-package dape)
