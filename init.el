@@ -13,7 +13,6 @@
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
-; (pdf-tools-install :no-query)
 (require 'use-package)
 ; (setq use-package-always-ensure t)
 
@@ -27,7 +26,7 @@
  '(ispell-dictionary nil)
  '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(dape slime-company restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(tablist dape slime-company restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
@@ -207,7 +206,9 @@
 
 (use-package pdf-tools
   :load-path "site-lisp/pdf-tools/lisp"
-  :magic ("%PDF" . pdf-view-mode))
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install :no-query))
 
 (use-package maude-mode)
 
@@ -277,16 +278,23 @@
 
 (use-package pyvenv)
 
+(use-package eglot)
+
 (use-package go-mode
-  :custom ((gofmt-command "goimports")
-           (display-fill-column-indicator-column 80))
-  :hook ((before-save . gofmt-before-save)
-         (go-mode . display-fill-column-indicator-mode)))
+  :custom
+  (gofmt-command "goimports")
+  (display-fill-column-indicator-column 80)
+
+  :hook
+  (go-mode . (lambda () (eglot-ensure) (display-fill-column-indicator-mode)))
+  (before-save . gofmt-before-save))
 
 (use-package go-playground)
 
-(use-package flycheck-golangci-lint
-  :hook (go-mode . flycheck-golangci-lint-setup))
+(use-package jsonrpc :ensure t)
+
+;(use-package flycheck-golangci-lint
+;  :hook (go-mode . flycheck-golangci-lint-setup))
 
 (use-package kotlin-mode)
 
