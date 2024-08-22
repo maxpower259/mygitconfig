@@ -26,7 +26,7 @@
  '(ispell-dictionary nil)
  '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
  '(package-selected-packages
-   '(tablist dape slime-company restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
+   '(k8s-mode tablist dape slime-company restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
  '(tab-width 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package))))
@@ -38,6 +38,7 @@
  ;; If there is more than one, they won't work right.
  )
 
+(setq warning-minimum-level :error)
 (setq inhibit-startup-message t)
 (window-divider-mode +1)
 (tool-bar-mode -1)
@@ -284,6 +285,7 @@
   :custom
   (gofmt-command "goimports")
   (display-fill-column-indicator-column 80)
+  (fill-column 80)
 
   :hook
   (go-mode . (lambda () (eglot-ensure) (display-fill-column-indicator-mode)))
@@ -313,3 +315,8 @@
   (plantuml-java-args (list "-Djava.awt.headless=true" "-jar")))
 
 (use-package dape)
+
+(use-package yaml-mode)
+
+(use-package k8s-mode
+  :hook (k8s-mode . yas-minor-mode))

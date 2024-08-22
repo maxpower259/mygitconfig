@@ -1,0 +1,13 @@
+(define-package "k8s-mode" "20230305.1039" "Major mode for Kubernetes configuration file"
+  '((emacs "24.3")
+    (yaml-mode "0.0.10"))
+  :commit "83266cecd6a39cdf57d124270646047860bfb7ab" :authors
+  '(("Giap Tran" . "txgvnn@gmail.com"))
+  :maintainers
+  '(("Giap Tran" . "txgvnn@gmail.com"))
+  :maintainer
+  '("Giap Tran" . "txgvnn@gmail.com")
+  :url "https://github.com/TxGVNN/emacs-k8s-mode")
+;; Local Variables:
+;; no-byte-compile: t
+;; End:
