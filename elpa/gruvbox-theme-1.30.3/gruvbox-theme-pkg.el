@@ -1,0 +1,2 @@
+;; Generated package description from gruvbox-theme.el  -*- no-byte-compile: t; lexical-binding:t -*-
+(define-package "gruvbox-theme" "1.30.3" "A retro-groove colour theme for Emacs" '((autothemer "0.2")) :commit "b34b8c0d9fe84190bb69cf084d7354d5e948fd94" :authors '(("Jason Milkins" . "jasonm23@gmail.com")) :maintainer '("Jason Milkins" . "jasonm23@gmail.com") :url "https://github.com/greduan/emacs-theme-gruvbox")

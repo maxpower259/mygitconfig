@@ -11,8 +11,8 @@
 
 ;;; Generated autoloads from biblio-core.el
 
-(autoload 'biblio-lookup "biblio-core" "\
-Perform a search using BACKEND, and QUERY.
+(autoload 'biblio-lookup "biblio-core"
+"Perform a search using BACKEND, and QUERY.
 Prompt for any missing or nil arguments.  BACKEND should be a
 function obeying the interface described in the docstring of
 `biblio-backends'.  Returns the buffer in which results will be

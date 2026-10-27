@@ -12,8 +12,8 @@
 ;;; Generated autoloads from maude-mode.el
 
 (unless (assoc "\\.maude\\'" auto-mode-alist) (add-to-list 'auto-mode-alist '("\\.maude\\'" . maude-mode)))
-(autoload 'maude-mode "maude-mode" "\
-Major mode for editing Maude files.
+(autoload 'maude-mode "maude-mode"
+"Major mode for editing Maude files.
 Provides syntax highlighting.
 \\[maude-indent-line] indents current line.
 \\[run-maude] starts an interactive maude process.
@@ -40,9 +40,7 @@ If you don't want the red warnings, put
 in your init file.
 
 The following keys are set:
-\\{maude-mode-map}
-
-(fn)" t)
+\\{maude-mode-map}" t)
 (register-definition-prefixes "maude-mode" '("inferior-maude-" "maude-" "run-"))
 
 ;;; End of scraped data

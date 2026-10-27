@@ -11,11 +11,11 @@
 
 ;;; Generated autoloads from yatemplate.el
 
-(defvar yatemplate-dir (locate-user-emacs-file "templates") "\
-The directory containing file templates.")
+(defvar yatemplate-dir (locate-user-emacs-file "templates")
+"The directory containing file templates.")
 (custom-autoload 'yatemplate-dir "yatemplate" t)
-(defvar yatemplate-separator ":" "\
-Separator used for splitting filenames.
+(defvar yatemplate-separator ":"
+"Separator used for splitting filenames.
 
 This is the separator that is used to split template filenames into
 the ordering and regular expression parts.
@@ -24,13 +24,13 @@ Note that this will be used as the SEPARATORS argument of
 `split-string', so be careful when setting this to a value that
 has special meaning in regular expressions.")
 (custom-autoload 'yatemplate-separator "yatemplate" t)
-(defvar yatemplate-ignored-files-regexp "README.md$" "\
-Regular expression matching files that do not contain `yatemplate-separator', but will generate no warning.")
+(defvar yatemplate-ignored-files-regexp "README.md$"
+"Regular expression matching files that do not contain `yatemplate-separator', but will generate no warning.")
 (custom-autoload 'yatemplate-ignored-files-regexp "yatemplate" t)
 (put 'yatemplate-owner 'safe-local-variable #'stringp)
 (put 'yatemplate-license 'safe-local-variable #'stringp)
-(autoload 'yatemplate-fill-alist "yatemplate" "\
-Fill `auto-insert-alist'.")
+(autoload 'yatemplate-fill-alist "yatemplate"
+"Fill `auto-insert-alist'.")
 (register-definition-prefixes "yatemplate" '("yatemplate-"))
 
 ;;; End of scraped data

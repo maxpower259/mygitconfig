@@ -1,322 +1,249 @@
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
+;;; init.el --- Cross-platform Vanilla Emacs Configuration ;;-*- lexical-binding: t; -*-
+
+;; =============================================================================
+;; 1. PACKAGE MANAGEMENT & CUSTOM FILE REDIRECT
+;; =============================================================================
+;; Redirect automatically generated custom code to keep init.el clean
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+                                        ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+
 (package-initialize)
 
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
 (require 'use-package)
-; (setq use-package-always-ensure t)
+(setq use-package-always-ensure t)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(inferior-octave-startup-args '("-i" "--line-editing"))
- '(inhibit-startup-screen t)
- '(ispell-dictionary nil)
- '(org-latex-src-block-backend 'minted nil nil "Customized with use-package org-mode")
- '(package-selected-packages
-   '(k8s-mode tablist dape slime-company restclient flycheck-golangci-lint all-the-icons org-modern plantuml-mode yatemplate atomic-chrome org-ref org-fragtog org-mode org-appear htmlize protobuf-mode graphviz-dot-mode markdown-mode go-playground go-mode kotlin-mode json-mode maude-mode geiser-racket tex gruvbox-theme pyvenv typescript-mode sudo-edit ac-js2 company flycheck js2hl xref-js2 js2-refactor js2-mode web-beautify ein treemacs all-the-icons-dired latex-preview-pane dired-hacks-utils dired-git visual-regexp-steroids multiple-cursors magit pdf-tools geiser slime yasnippet rainbow-delimiters use-package))
- '(tab-width 2)
- '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((use-package))))
+;; =============================================================================
+;; 2. EMACS CORE DEFAULTS & GLOBAL MODES
+;; =============================================================================
+(use-package emacs
+  :ensure nil
+  :init
+  (setq inhibit-startup-message t
+        inhibit-startup-screen t
+        warning-minimum-level :error
+        require-final-newline t)
+  (setq-default indent-tabs-mode nil
+                tab-width 2)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+  (setq native-comp-async-report-warnings-errors 'silent
+        warning-suppress-types '((comp)))
 
-(setq warning-minimum-level :error)
-(setq inhibit-startup-message t)
-(window-divider-mode +1)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(global-subword-mode +1)
-(column-number-mode +1)
-(windmove-default-keybindings)
+  :config
+  (window-divider-mode +1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (global-subword-mode +1)
+  (column-number-mode +1)
+  (show-paren-mode +1)
+  (global-hl-line-mode +1)
+  (windmove-default-keybindings)
+  (defalias 'yes-or-no-p 'y-or-n-p)
 
-(defalias 'yes-or-no-p 'y-or-n-p)
+  (when (member "Fira Code" (font-family-list))
+    (set-frame-font "Fira Code-11" nil t))
 
-(setq exec-path (append exec-path '("~/go/bin")))
+  (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 
-(setq backup-directory-alist
-      `(("." . ,(concat user-emacs-directory "backups"))))
+  (cond
+   ((eq system-type 'windows-nt)
+    (let ((go-path (expand-file-name "~/go/bin")))
+      (add-to-list 'exec-path go-path)
+      (setenv "PATH" (concat go-path ";" (getenv "PATH")))))
 
-(setq c-default-style '((java-mode . "java") (other . "gnu")))
+   ((eq system-type 'gnu/linux)
+    (add-to-list 'exec-path "~/go/bin")
+    (add-to-list 'exec-path "~/.local/bin")
 
-(when (executable-find "ipython")
-  (setq python-shell-interpreter "ipython")
-  (setq python-shell-interpreter-args "--simple-prompt -i"))
+    (when (string-match "Linux.*Microsoft.*Linux" (shell-command-to-string "uname -a"))
+      (setq browse-url-generic-program  "/mnt/c/Windows/System32/cmd.exe"
+            browse-url-generic-args     '("/c" "start")
+            browse-url-browser-function #'browse-url-generic))))
 
-(autoload 'octave-mode "octave-mod" nil t)
-(setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+  :hook
+  (before-save . delete-trailing-whitespace)
+  (before-save . my-untabify-buffer))
 
-(add-hook 'octave-mode-hook
-          (lambda ()
-            (abbrev-mode 1)
-            (auto-fill-mode 1)
-            (if (eq window-system 'x)
-                (font-lock-mode 1))))
+(defun my-untabify-buffer ()
+  "Convert tabs to spaces before saving if indent-tabs-mode is nil."
+  (if (not indent-tabs-mode)
+      (untabify (point-min) (point-max)))
+  nil)
 
-;; no tabs by default. modes that really need tabs should enable
-;; indent-tabs-mode explicitly. makefile-mode already does that, for
-;; example.
-(setq-default indent-tabs-mode nil)
-
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
-(setq require-final-newline t)
-
-;; if indent-tabs-mode is off, untabify before saving
-(add-hook 'write-file-functions
-          (lambda ()
-            (if (not indent-tabs-mode)
-                (untabify (point-min) (point-max)))
-            nil ))
-
-;; use built-in ibuffer which has many features from dired and replaces buffer-menu
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(show-paren-mode)
+;; =============================================================================
+;; 3. AUTOMATED TOOLCHAIN & BOOTSTRAP INSTALLS
+;; =============================================================================
+(use-package nerd-icons)
 
-(when (and (eq system-type 'gnu/linux)
-           (string-match
-            "Linux.*Microsoft.*Linux"
-            (shell-command-to-string "uname -a")))
-  (setq
-   browse-url-generic-program  "/mnt/c/Windows/System32/cmd.exe"
-   browse-url-generic-args     '("/c" "start")
-   browse-url-browser-function #'browse-url-generic))
+(defun my-auto-install-lsp-servers ()
+  "Bootstrap required language servers if runtime binaries are found on host."
+  (interactive)
+  (let ((go-bin (if (eq system-type 'windows-nt) "go.exe" "go"))
+        (npm-bin (if (eq system-type 'windows-nt) "npm.cmd" "npm")))
 
+    (when (and (executable-find go-bin) (not (executable-find "gopls")))
+      (message "Bootstrapping gopls...")
+      (start-process "install-gopls" "*lsp-install*" go-bin "install" "golang.org/x/tools/gopls@latest"))
+
+    (when (and (executable-find npm-bin) (not (executable-find "typescript-language-server")))
+      (message "Bootstrapping typescript-language-server...")
+      (start-process "install-tsserver" "*lsp-install*" npm-bin "install" "-g" "typescript" "typescript-language-server"))))
+
+(add-hook 'emacs-startup-hook
+          (lambda () (run-with-idle-timer 5 nil #'my-auto-install-lsp-servers)))
+
+;; =============================================================================
+;; 4. LIGATURES, INTERFACE & DECORATION (Nerd-Icons Version)
+;; =============================================================================
+(use-package ligature
+  :config
+  (ligature-set-ligatures 'prog-mode
+    '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\\\" "{-" "-}"
+      "<!--" "-->" "///" "////" "==" "===" "!==" "!=" "<=" ">="
+      "=:=" "=:=" "<=>" "<=" ">=" "<>" "<:" "<>" "<-" "->" "-->"
+      "->>" "<<-" "<==" "<=>" "==>" "=>" "=>>" ">-" ">=" "<~"
+      "<~>" "~>" "~-" "-~" "~@" "[|" "|]" "{|" "|}" "{|" "|}"
+      "++" "+++" "::" "::?" "==" "!=" "exact"
+      "&&" "&&&" "||" "|||" "!!" "!!" "??" "???" "%%" "%%%"
+      "##" "###" "####" ".=" ".-" ".." "..." "..<" ".?" "?."
+      "_=" "_|_" "::" "::=" "=:=" "!!" "!!" "??" "???" "%%" "%%%"
+      "##" "###" "####" ".=" ".-" ".." "..." "..<" ".?" "?."
+      "_=" "_|_" "::" "::=" "=:=" "&&" "&&&" "||" "|||"))
+  (global-ligature-mode t))
+
+(use-package vertico :init (vertico-mode))
+(use-package marginalia :init (marginalia-mode))
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
+(use-package gruvbox-theme :config (load-theme 'gruvbox-dark-medium t))
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-height 25)
+  (doom-modeline-icon t)
+  (doom-modeline-font-family "NerdFont")
+  (doom-modeline-buffer-file-name-style 'truncate-with-project))
+
+(use-package dashboard
+  :config (dashboard-setup-startup-hook)
+  :custom
+  (dashboard-display-icons-p t)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-startup-banner 'official)
+  (dashboard-items '((recents . 5) (bookmarks . 5) (projects . 5)))
+  (dashboard-center-content t)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t))
+
+(use-package rainbow-delimiters :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package nerd-icons-dired
+  :hook (dired-mode . nerd-icons-dired-mode))
+
+;; =============================================================================
+;; 5. IDE INFRASTRUCTURE (LSP, COMPLETION, LINTING)
+;; =============================================================================
+(use-package eglot
+  :ensure nil
+  :hook ((go-ts-mode typescript-ts-mode js-ts-mode python-base-mode kotlin-mode) . eglot-ensure))
+
+(use-package corfu :init (global-corfu-mode) :custom ((corfu-auto t) (corfu-quit-no-match 'separator)))
+(use-package flymake :ensure nil :hook (prog-mode . flymake-mode))
+(use-package dape)
+(use-package treesit-auto :custom (treesit-auto-install t) :config (global-treesit-auto-mode))
+
+;; =============================================================================
+;; 6. POWER TOOLS & UTILITIES
+;; =============================================================================
+(use-package magit)
+(use-package multiple-cursors)
+(use-package sudo-edit)
 (use-package restclient)
-
-(use-package htmlize)
-
 (use-package atomic-chrome)
+(use-package htmlize)
+(use-package treemacs)
+(use-package pdf-tools :magic ("%PDF" . pdf-view-mode) :config (pdf-tools-install :no-query))
+(use-package yasnippet :config (yas-global-mode 1))
+(use-package yatemplate :after yasnippet :config (yatemplate-fill-alist))
 
-(use-package org-mode
+;; =============================================================================
+;; 7. LANGUAGE RUNTIMES
+;; =============================================================================
+(use-package go-mode
+  :init (add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode))
+  :hook (go-ts-mode . (lambda () (add-hook 'before-save-hook #'eglot-format-buffer nil t))))
+(use-package go-playground)
+
+(use-package typescript-mode
   :init
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((dot . t)
-     (shell . t)
-     (python . t)
-     (plantuml . t)))
+  (add-to-list 'major-mode-remap-alist '(typescript-mode . typescript-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode)))
 
-  :hook
-  (org-babel-after-execute . org-redisplay-inline-images)
-
-  :custom
-  (org-src-preserve-indentation nil)
-  (org-edit-src-content-indentation 0)
-  (org-latex-prefer-user-labels t)
-  (org-startup-with-inline-images t)
-  (org-startup-indented t)
-  (org-pretty-entities t)
-  (org-use-sub-superscripts "{}")
-  (org-hide-emphasis-markers t)
-  (org-image-actual-width '(300))
-  (org-confirm-babel-evaluate nil)
-  (org-latex-listings 'minted)
-  (org-latex-packages-alist '(("" "minted")))
-  (org-latex-minted-options '(("breaklines" "true")
-                              ("breakanywhere" "true")))
-  (org-latex-pdf-process
-   '("%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
-     "bibtex %b"
-     "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"
-     "%latex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-  (org-plantuml-jar-path (expand-file-name "~/.emacs.d/plantuml/plantuml.jar"))
-  )
-
-(use-package org-ref)
-
-(use-package org-appear
-  :hook
-  (org-mode . org-appear-mode))
-
-(use-package org-modern
-  :hook
-  (org-mode . global-org-modern-mode)
-  :custom
-  (org-modern-keyword nil)
-  (org-modern-checkbox nil)
-  (org-modern-table nil))
-
-(use-package org-fragtog
-  :after org
-  :hook
-  (org-mode . org-fragtog-mode)
-  :custom
-  (org-startup-with-latex-preview t)
-  (org-format-latex-options
-   (plist-put org-format-latex-options :scale 2)
-   (plist-put org-format-latex-options :foreground 'auto)
-   (plist-put org-format-latex-options :background 'auto)))
-
-(use-package gruvbox-theme
-  :init (load-theme 'gruvbox-dark-medium t))
-
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-(use-package yasnippet
-  :config (yas-global-mode 1))
-
-(use-package yatemplate
-  :config (yatemplate-fill-alist))
-
-(use-package json-mode)
+(use-package pyvenv)
+(when (executable-find "ipython")
+  (setq python-shell-interpreter "ipython" python-shell-interpreter-args "--simple-prompt -i"))
 
 (use-package slime
   :init
   (setq inferior-lisp-program "sbcl")
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
-  :config
-  (slime-setup '(slime-fancy slime-company))
-  :hook
-  (slime-mode . (lambda ()
-                  (add-to-list 'slime-contribs 'slime-fancy)
-                  (add-to-list 'slime-contribs 'inferior-slime))))
+  (when (file-exists-p "~/quicklisp/slime-helper.el") (load (expand-file-name "~/quicklisp/slime-helper.el")))
+  :config (slime-setup '(slime-fancy)))
 
-(use-package slime-company
-  :after slime
-  :config (setq slime-company-completion 'fuzzy
-                slime-company-after-completion 'slime-company-just-one-space))
-
-
+(use-package geiser :custom ((geiser-mode-auto-p t) (geiser-mode-eval-last-sexp-to-buffer t)))
 (use-package geiser-racket)
 
-(use-package geiser
-  :custom
-  (geiser-mode-auto-p t)
-  (geiser-mode-eval-last-sexp-to-buffer t))
-
-(use-package pdf-tools
-  :load-path "site-lisp/pdf-tools/lisp"
-  :magic ("%PDF" . pdf-view-mode)
-  :config
-  (pdf-tools-install :no-query))
+(autoload 'octave-mode "octave-mod" nil t)
+(add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
+(add-hook 'octave-mode-hook (lambda () (abbrev-mode 1) (auto-fill-mode 1)))
 
 (use-package maude-mode)
-
-(use-package magit)
-
-(use-package multiple-cursors)
-
-(use-package visual-regexp-steroids)
-
-(use-package dired-git)
-
-(use-package dired-hacks-utils)
-
-(use-package latex-preview-pane)
-
-; all-the-icons-install-fonts
-(use-package all-the-icons)
-
-(use-package all-the-icons-dired
-  :hook (dired-mode . all-the-icons-dired-mode))
-
-(use-package treemacs)
-
-(use-package ein
-  :custom
-  (ein:output-area-inlined-images t)
-  (ein:slice-image t))
-
-(use-package web-beautify)
-
-(use-package js2-mode
-  :hook (js-mode . js2-minor-mode)
-  :config
-  (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
-  (add-to-list 'js2-global-externs "d3"))
-
-(use-package js2-refactor
-  :hook (js2-minor-mode . js2-refactor-mode)
-  :config (js2r-add-keybindings-with-prefix "C-c C-r"))
-
-(use-package xref-js2)
-
-(use-package js2hl)
-
-(use-package flycheck
-  :hook (after-init . global-flycheck-mode))
-
-(use-package company
-  :config
-  (add-to-list 'company-backends 'company-capf)
-  (define-key company-active-map (kbd "\C-n") 'company-select-next)
-  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
-  (define-key company-active-map (kbd "M-.") 'company-show-location)
-  :hook
-  (after-init . global-company-mode))
-
-(use-package ac-js2
-  :config
-  (add-to-list 'company-backends 'ac-js2-company)
-  :custom
-  (ac-js2-evaluate-calls t))
-
-(use-package sudo-edit)
-
-(use-package typescript-mode)
-
-(use-package pyvenv)
-
-(use-package eglot)
-
-(use-package go-mode
-  :custom
-  (gofmt-command "goimports")
-  (display-fill-column-indicator-column 80)
-  (fill-column 80)
-
-  :hook
-  (go-mode . (lambda () (eglot-ensure) (display-fill-column-indicator-mode)))
-  (before-save . gofmt-before-save))
-
-(use-package go-playground)
-
-(use-package jsonrpc :ensure t)
-
-;(use-package flycheck-golangci-lint
-;  :hook (go-mode . flycheck-golangci-lint-setup))
-
-(use-package kotlin-mode)
-
-(use-package markdown-mode)
-
 (use-package graphviz-dot-mode)
-
 (use-package protobuf-mode)
-
+(use-package kotlin-mode)
+(use-package yaml-mode)
+(use-package json-mode :init (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode)))
+(use-package k8s-mode :hook (k8s-mode . yas-minor-mode))
 (use-package plantuml-mode
   :custom
   (plantuml-jar-path (expand-file-name "~/.emacs.d/plantuml/plantuml.jar"))
-  (plantuml-jar-args '("-tpng"))
   (plantuml-default-exec-mode 'jar)
-  (plantuml-output-type "png")
-  (plantuml-java-args (list "-Djava.awt.headless=true" "-jar")))
+  (plantuml-output-type "png"))
 
-(use-package dape)
+;; =============================================================================
+;; 8. ORG-MODE ECOSYSTEM
+;; =============================================================================
+(use-package org
+  :ensure nil
+  :init
+  (org-babel-do-load-languages 'org-babel-load-languages '((dot . t) (shell . t) (python . t) (plantuml . t)))
+  :hook (org-babel-after-execute . org-redisplay-inline-images)
+  :custom
+  (org-startup-with-inline-images t)
+  (org-startup-indented t)
+  (org-hide-emphasis-markers t)
+  (org-confirm-babel-evaluate nil)
+  (org-latex-listings 'minted)
+  (org-latex-packages-alist '(("" "minted"))))
 
-(use-package yaml-mode)
+(use-package org-ref)
+(use-package org-appear :hook (org-mode . org-appear-mode))
+(use-package org-modern
+  :hook (org-mode . global-org-modern-mode)
+  :custom ((org-modern-keyword nil) (org-modern-checkbox nil) (org-modern-table nil)))
 
-(use-package k8s-mode
-  :hook (k8s-mode . yas-minor-mode))
+(use-package org-fragtog
+  :hook (org-mode . org-fragtog-mode)
+  :custom (org-startup-with-latex-preview t) (org-format-latex-options (plist-put org-format-latex-options :scale 2)))
+
+(use-package markdown-mode)

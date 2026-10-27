@@ -11,26 +11,26 @@
 
 ;;; Generated autoloads from gotest.el
 
-(autoload 'go-test-current-test-cache "gotest" "\
-Repeat the previous current test execution." t)
-(autoload 'go-test-current-test "gotest" "\
-Launch go test on the current test.
+(autoload 'go-test-current-test-cache "gotest"
+"Repeat the previous current test execution." t)
+(autoload 'go-test-current-test "gotest"
+"Launch go test on the current test.
 
 (fn &optional LAST)" t)
-(autoload 'go-test-current-file "gotest" "\
-Launch go test on the current buffer file." t)
-(autoload 'go-test-current-project "gotest" "\
-Launch go test on the current project." t)
-(autoload 'go-test-current-benchmark "gotest" "\
-Launch go benchmark on current benchmark." t)
-(autoload 'go-test-current-file-benchmarks "gotest" "\
-Launch go benchmark on current file benchmarks." t)
-(autoload 'go-test-current-project-benchmarks "gotest" "\
-Launch go benchmark on current project." t)
-(autoload 'go-test-current-coverage "gotest" "\
-Launch go test coverage on the current project." t)
-(autoload 'go-run "gotest" "\
-Launch go run on current buffer file.
+(autoload 'go-test-current-file "gotest"
+"Launch go test on the current buffer file." t)
+(autoload 'go-test-current-project "gotest"
+"Launch go test on the current project." t)
+(autoload 'go-test-current-benchmark "gotest"
+"Launch go benchmark on current benchmark." t)
+(autoload 'go-test-current-file-benchmarks "gotest"
+"Launch go benchmark on current file benchmarks." t)
+(autoload 'go-test-current-project-benchmarks "gotest"
+"Launch go benchmark on current project." t)
+(autoload 'go-test-current-coverage "gotest"
+"Launch go test coverage on the current project." t)
+(autoload 'go-run "gotest"
+"Launch go run on current buffer file.
 
 (fn &optional ARGS)" t)
 (register-definition-prefixes "gotest" '("go-"))

@@ -4,7 +4,8 @@
 
 ;; Author: Wieland Hoffmann <themineo+yatemplate@gmail.com>
 ;; URL: https://github.com/mineo/yatemplate
-;; Version: 1.0
+;; Package-Version: 20211115.1208
+;; Package-Revision: 275745ce1482
 ;; Package-Requires: ((yasnippet "0.8.1") (emacs "24.3"))
 ;; Keywords: files, convenience
 

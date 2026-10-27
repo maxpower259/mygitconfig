@@ -6,7 +6,8 @@
 ;; Maintainer: Rudi Schlatte <rudi@constantly.at>
 ;; URL: https://github.com/rudi/abs-mode
 ;; Package-Requires: ((emacs "25"))
-;; Version: 0.3
+;; Package-Version: 20230504.937
+;; Package-Revision: 2e1f68a89049
 ;; Keywords: Languages maude
 
 ;; This program is free software; you can redistribute it and/or

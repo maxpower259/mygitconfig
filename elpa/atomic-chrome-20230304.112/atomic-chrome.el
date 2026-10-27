@@ -6,7 +6,8 @@
 ;; Package-Requires: ((emacs "24.4") (let-alist "1.0.4") (websocket "1.4"))
 ;; Keywords: chrome edit textarea
 ;; URL: https://github.com/alpha22jp/atomic-chrome
-;; Version: 2.0.0
+;; Package-Version: 20230304.112
+;; Package-Revision: f1b077be7e41
 
 ;; This program is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
