@@ -20,13 +20,16 @@
 ;; =============================================================================
 ;; 2. EMACS CORE DEFAULTS & GLOBAL MODES
 ;; =============================================================================
+
 (use-package emacs
   :ensure nil
+
   :init
   (setq inhibit-startup-message t
         inhibit-startup-screen t
         warning-minimum-level :error
         require-final-newline t)
+
   (setq-default indent-tabs-mode nil
                 tab-width 2)
 
@@ -43,27 +46,43 @@
   (show-paren-mode +1)
   (global-hl-line-mode +1)
   (windmove-default-keybindings)
+
   (defalias 'yes-or-no-p 'y-or-n-p)
 
   (when (member "Fira Code" (font-family-list))
     (set-frame-font "Fira Code-11" nil t))
 
-  (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+  (setq backup-directory-alist
+        `(("." . ,(expand-file-name "backups" user-emacs-directory))))
 
-  (cond
-   ((eq system-type 'windows-nt)
-    (let ((go-path (expand-file-name "~/go/bin")))
-      (add-to-list 'exec-path go-path)
-      (setenv "PATH" (concat go-path ";" (getenv "PATH")))))
+  (pcase system-type
+    ('windows-nt
+     (let ((go-path (expand-file-name "~/go/bin")))
+       (add-to-list 'exec-path go-path)
+       (setenv "PATH" (concat go-path ";" (getenv "PATH")))))
 
-   ((eq system-type 'gnu/linux)
-    (add-to-list 'exec-path "~/go/bin")
-    (add-to-list 'exec-path "~/.local/bin")
+    ('gnu/linux
+     (dolist (path '("~/.local/bin" "~/go/bin"))
+       (add-to-list 'exec-path (expand-file-name path)))
 
-    (when (string-match "Linux.*Microsoft.*Linux" (shell-command-to-string "uname -a"))
-      (setq browse-url-generic-program  "/mnt/c/Windows/System32/cmd.exe"
-            browse-url-generic-args     '("/c" "start")
-            browse-url-browser-function #'browse-url-generic))))
+     ;; WSL
+     (when (string-match-p
+            "Linux.*Microsoft.*Linux"
+            (shell-command-to-string "uname -a"))
+       (setq browse-url-generic-program
+             "/mnt/c/Windows/System32/cmd.exe"
+             browse-url-generic-args '("/c" "start")
+             browse-url-browser-function #'browse-url-generic)))
+
+    ('android
+     (tool-bar-mode 1)
+     (set-frame-parameter nil 'tool-bar-position 'bottom)
+     (setq tool-bar-button-margin 24
+           tool-bar-button-relief 2)
+     (modifier-bar-mode 1)
+     (global-visual-line-mode 1)
+     (setq gc-cons-threshold (* 50 1024 1024)
+           frame-inhibit-implied-resize t)))
 
   :hook
   (before-save . delete-trailing-whitespace)
@@ -105,17 +124,17 @@
 (use-package ligature
   :config
   (ligature-set-ligatures 'prog-mode
-    '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\\\" "{-" "-}"
-      "<!--" "-->" "///" "////" "==" "===" "!==" "!=" "<=" ">="
-      "=:=" "=:=" "<=>" "<=" ">=" "<>" "<:" "<>" "<-" "->" "-->"
-      "->>" "<<-" "<==" "<=>" "==>" "=>" "=>>" ">-" ">=" "<~"
-      "<~>" "~>" "~-" "-~" "~@" "[|" "|]" "{|" "|}" "{|" "|}"
-      "++" "+++" "::" "::?" "==" "!=" "exact"
-      "&&" "&&&" "||" "|||" "!!" "!!" "??" "???" "%%" "%%%"
-      "##" "###" "####" ".=" ".-" ".." "..." "..<" ".?" "?."
-      "_=" "_|_" "::" "::=" "=:=" "!!" "!!" "??" "???" "%%" "%%%"
-      "##" "###" "####" ".=" ".-" ".." "..." "..<" ".?" "?."
-      "_=" "_|_" "::" "::=" "=:=" "&&" "&&&" "||" "|||"))
+                          '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\\\" "{-" "-}"
+                            "<!--" "-->" "///" "////" "==" "===" "!==" "!=" "<=" ">="
+                            "=:=" "=:=" "<=>" "<=" ">=" "<>" "<:" "<>" "<-" "->" "-->"
+                            "->>" "<<-" "<==" "<=>" "==>" "=>" "=>>" ">-" ">=" "<~"
+                            "<~>" "~>" "~-" "-~" "~@" "[|" "|]" "{|" "|}" "{|" "|}"
+                            "++" "+++" "::" "::?" "==" "!=" "exact"
+                            "&&" "&&&" "||" "|||" "!!" "!!" "??" "???" "%%" "%%%"
+                            "##" "###" "####" ".=" ".-" ".." "..." "..<" ".?" "?."
+                            "_=" "_|_" "::" "::=" "=:=" "!!" "!!" "??" "???" "%%" "%%%"
+                            "##" "###" "####" ".=" ".-" ".." "..." "..<" ".?" "?."
+                            "_=" "_|_" "::" "::=" "=:=" "&&" "&&&" "||" "|||"))
   (global-ligature-mode t))
 
 (use-package vertico :init (vertico-mode))
